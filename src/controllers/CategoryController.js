@@ -42,3 +42,14 @@ exports.deleteCategory = async (req, res) => {
     res.status(500).json({ message: 'Lỗi khi xoá danh mục', error: error.message });
   }
 };
+
+// Lấy category theo ID
+exports.getCategoryById = async (req, res) => {
+  try {
+    const category = await Category.findById(req.params.id);
+    if (!category) return res.status(404).json({ message: 'Không tìm thấy danh mục' });
+    res.json(category);
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi khi lấy danh mục', error: error.message });
+  }
+};
