@@ -7,7 +7,7 @@ const cors = require("cors");
 dotenv.config();
 
 const app = express();
-const port = process.env.Port || 3001;
+const port = process.env.PORT || 3001;
 
 // Mount the routes middleware
 app.use(cors());    
