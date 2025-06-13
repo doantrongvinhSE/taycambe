@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const contentController = require('../controllers/contentController');
+const contentController = require('../controllers/ContentController');
 
 // Tạo content mới
 router.post('/contents', contentController.createContent);
