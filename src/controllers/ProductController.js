@@ -4,7 +4,7 @@ const Category = require('../models/Category');
 // [GET] /api/products - Lấy tất cả sản phẩm
 exports.getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find().populate('category');
+    const products = await Product.find({ isDeleted: false }).populate('category');
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: 'Lỗi khi lấy danh sách sản phẩm', error });
@@ -14,7 +14,7 @@ exports.getAllProducts = async (req, res) => {
 // [GET] /api/products/:id - Lấy 1 sản phẩm theo ID
 exports.getProductById = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id).populate('category');
+    const product = await Product.findOne({ _id: req.params.id, isDeleted: false }).populate('category');
     if (!product) return res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
     res.json(product);
   } catch (error) {
@@ -44,28 +44,33 @@ exports.updateProduct = async (req, res) => {
   }
 };
 
-// [DELETE] /api/products/:id - Xoá sản phẩm
+// [DELETE] /api/products/:id - Xoá sản phẩm (soft delete)
 exports.deleteProduct = async (req, res) => {
   try {
-    const deleted = await Product.findByIdAndDelete(req.params.id);
-    if (!deleted) return res.status(404).json({ message: 'Không tìm thấy sản phẩm để xoá' });
+    const updated = await Product.findByIdAndUpdate(
+      req.params.id,
+      { isDeleted: true },
+      { new: true }
+    );
+    if (!updated) return res.status(404).json({ message: 'Không tìm thấy sản phẩm để xoá' });
     res.json({ message: 'Đã xoá sản phẩm thành công' });
   } catch (error) {
     res.status(500).json({ message: 'Lỗi khi xoá sản phẩm', error });
   }
 };
 
-
 // [GET] /api/products/category/:categoryId - Lấy sản phẩm theo danh mục
 exports.getProductsByCategory = async (req, res) => {
   try {
-    const products = await Product.find({ category: req.params.categoryId }).populate('category');
+    const products = await Product.find({ 
+      category: req.params.categoryId,
+      isDeleted: false 
+    }).populate('category');
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: 'Lỗi khi lấy sản phẩm theo danh mục', error: error.message });
   }
 };
-
 
 // [GET] /api/products/search - Tìm kiếm sản phẩm
 exports.searchProducts = async (req, res) => {
@@ -79,7 +84,8 @@ exports.searchProducts = async (req, res) => {
     const products = await Product.find({
       $or: [
         { name: { $regex: keyword, $options: 'i' } },        // tìm theo tên (không phân biệt hoa thường)
-      ]
+      ],
+      isDeleted: false
     }).populate('category');
 
     res.json(products);

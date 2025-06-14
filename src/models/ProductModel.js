@@ -14,6 +14,7 @@ const ProductSchema = new mongoose.Schema({
   variants: [VariantSchema],
   description: String,
   category: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }],
+  isDeleted: { type: Boolean, default: false }
 }, { timestamps: true });
 
 
