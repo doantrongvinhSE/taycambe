@@ -44,7 +44,6 @@ exports.getOrdersByEmail = async (req, res) => {
   try {
     const { email } = req.params;
     const orders = await Order.find({ 'customerInfo.email': email })
-      .populate('items.product')
       .sort('-createdAt');
 
     res.status(200).json({
@@ -64,7 +63,6 @@ exports.getOrdersByPhone = async (req, res) => {
   try {
     const { phone } = req.params;
     const orders = await Order.find({ 'customerInfo.phone': phone })
-      .populate('items.product')
       .sort('-createdAt');
 
     res.status(200).json({
@@ -82,8 +80,7 @@ exports.getOrdersByPhone = async (req, res) => {
 // Lấy chi tiết một đơn hàng
 exports.getOrderById = async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id)
-      .populate('items.product');
+    const order = await Order.findById(req.params.id);
 
     if (!order) {
       return res.status(404).json({
