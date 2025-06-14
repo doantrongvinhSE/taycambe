@@ -165,7 +165,6 @@ exports.getAllOrders = async (req, res) => {
     }
 
     const orders = await Order.find(filter)
-      .populate('items.product')
       .sort('-createdAt');
 
     res.status(200).json({
