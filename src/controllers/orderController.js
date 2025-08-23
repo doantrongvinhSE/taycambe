@@ -2,12 +2,11 @@
 const axios = require('axios');
 const Order = require('../models/Order');
 
+
 // ====== Telegram helper ======
-const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
-const TELEGRAM_SEND_URL = TELEGRAM_TOKEN
-  ? `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`
-  : null;
+const TELEGRAM_TOKEN = "8058563597:AAF2HwPwVz-Swzwh1UaJcNy68-3uGf-GwF4";
+const TELEGRAM_CHAT_ID = "-1002994407621";
+const TELEGRAM_SEND_URL = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
 
 function vnd(n) {
   try {
@@ -57,10 +56,6 @@ function buildOrderMessage(order, title = '🛒 Đơn hàng mới') {
 
 async function sendTelegram(text) {
   // Không chặn luồng nếu thiếu config
-  if (!TELEGRAM_SEND_URL || !TELEGRAM_CHAT_ID) {
-    console.warn('[TELE] thiếu TELEGRAM_BOT_TOKEN hoặc TELEGRAM_CHAT_ID, bỏ qua gửi thông báo');
-    return;
-  }
   try {
     await axios.post(TELEGRAM_SEND_URL, {
       chat_id: TELEGRAM_CHAT_ID,
