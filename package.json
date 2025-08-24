@@ -20,6 +20,7 @@
     "mongoose": "^8.14.3",
     "multer": "^2.0.0",
     "multer-storage-cloudinary": "^4.0.0",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "serverless-http": "^3.2.0"
   }
 }

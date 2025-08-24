@@ -7,7 +7,7 @@ const cors = require("cors");
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3001;
+// const port = process.env.PORT || 3001;
 
 // Mount the routes middleware
 app.use(cors());    
@@ -16,6 +16,8 @@ app.use('/', routes);
 
 connectDB();
 
-app.listen(port, () => {
-    console.log("server is running on port: " + port)
-});
+// app.listen(port, () => {
+//     console.log("server is running on port: " + port)
+// });
+
+module.exports = app;
