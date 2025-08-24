@@ -12,6 +12,9 @@ const app = express();
 // Mount the routes middleware
 app.use(cors());    
 app.use(express.json());
+
+app.get("/healthz", (req, res) => res.send("ok"));
+
 app.use('/', routes);
 
 connectDB();
