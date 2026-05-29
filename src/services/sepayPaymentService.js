@@ -1,5 +1,5 @@
 function extractOrderCode(content = '') {
-  const match = String(content).toUpperCase().match(/DH[A-Z0-9]{6}/);
+  const match = String(content).toUpperCase().match(/DH\d{8}/);
   return match ? match[0] : null;
 }
 

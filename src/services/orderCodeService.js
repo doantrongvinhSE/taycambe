@@ -1,13 +1,5 @@
-const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-
 function createOrderCodeCandidate() {
-  let suffix = '';
-
-  for (let i = 0; i < 6; i += 1) {
-    suffix += ALPHABET[Math.floor(Math.random() * ALPHABET.length)];
-  }
-
-  return `DH${suffix}`;
+  return `DH${Math.floor(10000000 + Math.random() * 90000000)}`;
 }
 
 async function generateUniqueOrderCode(Order) {

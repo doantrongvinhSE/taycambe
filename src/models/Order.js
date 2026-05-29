@@ -70,7 +70,7 @@ const orderSchema = new mongoose.Schema({
     type: String,
     unique: true,
     sparse: true,
-    match: /^DH[A-Z0-9]{6}$/
+    match: /^DH\d{8}$/
   },
   paymentMethod: {
     type: String,
