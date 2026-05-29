@@ -24,10 +24,49 @@ test('extractTransferContent reads common Sepay content fields', () => {
   assert.equal(extractTransferContent({ transaction_content: 'DHCCCCCC' }), 'DHCCCCCC');
 });
 
+test('extractTransferContent reads SePay webhook transaction content', () => {
+  const payload = {
+    id: 1,
+    gateway: 'VPBank',
+    transactionDate: '2026-05-29 10:00:00',
+    accountNumber: '0343383136',
+    code: null,
+    content: 'DH8F3K2A',
+    transferType: 'in',
+    transferAmount: 269000,
+  };
+
+  assert.equal(extractTransferContent(payload), 'DH8F3K2A');
+});
+
+test('extractTransferContent finds DH code in nested webhook payload', () => {
+  const payload = {
+    data: {
+      transaction: {
+        description: 'Khach hang thanh toan DHZZ9999',
+      },
+    },
+  };
+
+  assert.equal(extractTransferContent(payload), 'Khach hang thanh toan DHZZ9999');
+});
+
 test('extractTransferAmount reads and normalizes common amount fields', () => {
   assert.equal(extractTransferAmount({ transferAmount: 269000 }), 269000);
   assert.equal(extractTransferAmount({ amount: '269,000' }), 269000);
   assert.equal(extractTransferAmount({ transfer_amount: '269000' }), 269000);
+});
+
+test('extractTransferAmount finds amount in nested webhook payload', () => {
+  const payload = {
+    data: {
+      transaction: {
+        transferAmount: '269000',
+      },
+    },
+  };
+
+  assert.equal(extractTransferAmount(payload), 269000);
 });
 
 test('extractTransferAmount returns null for missing amount', () => {

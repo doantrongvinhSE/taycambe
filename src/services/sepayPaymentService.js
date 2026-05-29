@@ -3,20 +3,61 @@ function extractOrderCode(content = '') {
   return match ? match[0] : null;
 }
 
-function firstString(...values) {
+const CONTENT_KEYS = new Set([
+  'content',
+  'description',
+  'transaction_content',
+  'transfercontent',
+  'transfer_content',
+  'note',
+]);
+
+const AMOUNT_KEYS = new Set([
+  'transferamount',
+  'transfer_amount',
+  'amount',
+  'money',
+  'transactionamount',
+  'transaction_amount',
+]);
+
+function collectValues(payload, matcher, values = []) {
+  if (!payload || typeof payload !== 'object') {
+    return values;
+  }
+
+  for (const [key, value] of Object.entries(payload)) {
+    if (matcher(key)) {
+      values.push(value);
+    }
+
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      collectValues(value, matcher, values);
+    }
+  }
+
+  return values;
+}
+
+function firstString(values) {
   const value = values.find((item) => typeof item === 'string' && item.trim());
   return value ? value.trim() : '';
 }
 
 function extractTransferContent(payload = {}) {
-  return firstString(
-    payload.content,
-    payload.description,
-    payload.transaction_content,
-    payload.transferContent,
-    payload.transfer_content,
-    payload.note
-  );
+  const content = firstString(collectValues(
+    payload,
+    (key) => CONTENT_KEYS.has(key.toLowerCase())
+  ));
+
+  if (content) {
+    return content;
+  }
+
+  return firstString(collectValues(
+    payload,
+    (key) => typeof key === 'string'
+  ).filter((value) => extractOrderCode(value)));
 }
 
 function normalizeAmount(value) {
@@ -33,14 +74,10 @@ function normalizeAmount(value) {
 }
 
 function extractTransferAmount(payload = {}) {
-  const candidates = [
-    payload.transferAmount,
-    payload.amount,
-    payload.transfer_amount,
-    payload.money,
-    payload.transactionAmount,
-    payload.transaction_amount,
-  ];
+  const candidates = collectValues(
+    payload,
+    (key) => AMOUNT_KEYS.has(key.toLowerCase())
+  );
 
   for (const candidate of candidates) {
     const amount = normalizeAmount(candidate);
