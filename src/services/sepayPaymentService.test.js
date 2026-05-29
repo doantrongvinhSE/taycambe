@@ -51,6 +51,17 @@ test('extractTransferContent finds DH code in nested webhook payload', () => {
   assert.equal(extractTransferContent(payload), 'Khach hang thanh toan DHZZ9999');
 });
 
+test('extractTransferContent prefers the field containing DH order code', () => {
+  const payload = {
+    code: 'SEVN63DC8E5C',
+    content: 'SEVN63DC8E5C chuyen tien',
+    description: 'NGUYEN VAN A chuyen tien DH8F3K2A',
+    transferAmount: 5000000,
+  };
+
+  assert.equal(extractTransferContent(payload), 'NGUYEN VAN A chuyen tien DH8F3K2A');
+});
+
 test('extractTransferAmount reads and normalizes common amount fields', () => {
   assert.equal(extractTransferAmount({ transferAmount: 269000 }), 269000);
   assert.equal(extractTransferAmount({ amount: '269,000' }), 269000);

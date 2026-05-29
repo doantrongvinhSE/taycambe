@@ -45,10 +45,17 @@ function firstString(values) {
 }
 
 function extractTransferContent(payload = {}) {
-  const content = firstString(collectValues(
+  const contentCandidates = collectValues(
     payload,
     (key) => CONTENT_KEYS.has(key.toLowerCase())
-  ));
+  );
+  const contentWithOrderCode = firstString(contentCandidates.filter((value) => extractOrderCode(value)));
+
+  if (contentWithOrderCode) {
+    return contentWithOrderCode;
+  }
+
+  const content = firstString(contentCandidates);
 
   if (content) {
     return content;
